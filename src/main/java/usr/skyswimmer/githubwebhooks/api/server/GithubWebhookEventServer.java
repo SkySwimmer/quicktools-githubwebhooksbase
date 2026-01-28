@@ -178,6 +178,12 @@ public class GithubWebhookEventServer {
 				req.setResponseStatus(403, "Forbidden");
 				return;
 			}
+			if (!req.hasHeader("X-GitHub-Event")) {
+				logger.error("Webhook request " + req.getRequestMethod() + " " + req.getRequestPath()
+						+ " lacked header X-GitHub-Event");
+				req.setResponseStatus(403, "Forbidden");
+				return;
+			}
 			String sig = req.getHeader("X-Hub-Signature-256");
 			if (!sig.startsWith("sha256=")) {
 				logger.error("Webhook request " + req.getRequestMethod() + " " + req.getRequestPath()
@@ -252,7 +258,8 @@ public class GithubWebhookEventServer {
 			}
 
 			// Call event
-			WebhookActivateEvent ev = new WebhookActivateEvent(this, server, webhook, hook, req);
+			WebhookActivateEvent ev = new WebhookActivateEvent(this, server, webhook, req.getHeader("X-GitHub-Event"),
+					hook, req);
 			webhookActivateEvent.dispatchEvent(ev);
 			if (ev.isHandled())
 				return;

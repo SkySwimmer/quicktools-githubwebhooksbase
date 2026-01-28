@@ -11,11 +11,13 @@ import usr.skyswimmer.githubwebhooks.api.server.GithubWebhookEventServer;
 public class WebhookActivateEvent extends WebServerEvent {
 
 	private WebhookEntity webhook;
+
+	private String event;
 	private JsonObject content;
 	private LambdaPushContext req;
 
 	public WebhookActivateEvent(GithubWebhookEventServer server, ConnectiveHttpServer webserver, WebhookEntity webhook,
-			JsonObject content, LambdaPushContext req) {
+			String event, JsonObject content, LambdaPushContext req) {
 		super(server, webserver);
 		this.webhook = webhook;
 		this.content = content;
@@ -26,8 +28,12 @@ public class WebhookActivateEvent extends WebServerEvent {
 		return webhook;
 	}
 
-	public JsonObject getWebhookBody() {
+	public JsonObject getEventData() {
 		return content;
+	}
+
+	public String getEvent() {
+		return event;
 	}
 
 	public LambdaPushContext handler() {
