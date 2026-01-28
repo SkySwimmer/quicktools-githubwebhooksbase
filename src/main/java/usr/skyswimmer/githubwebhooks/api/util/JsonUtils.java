@@ -25,7 +25,7 @@ public class JsonUtils {
 
 	public static JsonElement getElementOrError(String scope, JsonObject object, String element) throws IOException {
 		if (!object.has(element))
-			throw new IOException(scope + " misses element " + element);
+			throw new IOException(scope + " is missing required element '" + element + "'");
 		return object.get(element);
 	}
 
@@ -57,6 +57,128 @@ public class JsonUtils {
 		if (ele.isJsonNull())
 			return null;
 		return ele.getAsString();
+	}
+
+	public static boolean getBooleanOrError(String scope, JsonObject object, String element) throws IOException {
+		JsonElement ele = getElementOrError(scope, object, element);
+		if (!ele.isJsonPrimitive()
+				|| (!ele.getAsString().equalsIgnoreCase("false") && !ele.getAsString().equalsIgnoreCase("true")))
+			throw new IOException(scope + " had invalid value for " + element + " (expected boolean value)");
+		return ele.getAsBoolean();
+	}
+
+	public static int getIntOrError(String scope, JsonObject object, String element) throws IOException {
+		JsonElement ele = getElementOrError(scope, object, element);
+		try {
+			return ele.getAsInt();
+		} catch (Exception e) {
+			throw new IOException(scope + " had invalid value for " + element + " (expected integer value)");
+		}
+	}
+
+	public static long getLongOrError(String scope, JsonObject object, String element) throws IOException {
+		JsonElement ele = getElementOrError(scope, object, element);
+		try {
+			return ele.getAsLong();
+		} catch (Exception e) {
+			throw new IOException(scope + " had invalid value for " + element + " (expected integer value)");
+		}
+	}
+
+	public static double getDoubleOrError(String scope, JsonObject object, String element) throws IOException {
+		JsonElement ele = getElementOrError(scope, object, element);
+		try {
+			return ele.getAsDouble();
+		} catch (Exception e) {
+			throw new IOException(scope + " had invalid value for " + element + " (expected floating point value)");
+		}
+	}
+
+	public static float getFloatOrError(String scope, JsonObject object, String element) throws IOException {
+		JsonElement ele = getElementOrError(scope, object, element);
+		try {
+			return ele.getAsFloat();
+		} catch (Exception e) {
+			throw new IOException(scope + " had invalid value for " + element + " (expected floating point value)");
+		}
+	}
+
+	public static String getStringOrError(String scope, JsonObject object, String element) throws IOException {
+		JsonElement ele = getElementOrError(scope, object, element);
+		if (!ele.isJsonPrimitive())
+			throw new IOException(scope + " had invalid value for " + element + " (expected String value)");
+		return ele.getAsString();
+	}
+
+	public static JsonObject getObjectOrError(String scope, JsonObject object, String element) throws IOException {
+		JsonElement ele = getElementOrError(scope, object, element);
+		if (!ele.isJsonObject())
+			throw new IOException(scope + " had invalid value for " + element + " (expected json object value)");
+		return ele.getAsJsonObject();
+	}
+
+	public static JsonArray getArrayOrError(String scope, JsonObject object, String element) throws IOException {
+		JsonElement ele = getElementOrError(scope, object, element);
+		if (!ele.isJsonObject())
+			throw new IOException(scope + " had invalid value for " + element + " (expected json array value)");
+		return ele.getAsJsonArray();
+	}
+
+	public static boolean getBooleanOrError(String scope, JsonElement ele) throws IOException {
+		if (!ele.isJsonPrimitive()
+				|| (!ele.getAsString().equalsIgnoreCase("false") && !ele.getAsString().equalsIgnoreCase("true")))
+			throw new IOException(scope + " had invalid value (expected boolean value)");
+		return ele.getAsBoolean();
+	}
+
+	public static int getIntOrError(String scope, JsonElement ele) throws IOException {
+		try {
+			return ele.getAsInt();
+		} catch (Exception e) {
+			throw new IOException(scope + " had invalid value (expected integer value)");
+		}
+	}
+
+	public static long getLongOrError(String scope, JsonElement ele) throws IOException {
+		try {
+			return ele.getAsLong();
+		} catch (Exception e) {
+			throw new IOException(scope + " had invalid value (expected integer value)");
+		}
+	}
+
+	public static double getDoubleOrError(String scope, JsonElement ele) throws IOException {
+		try {
+			return ele.getAsDouble();
+		} catch (Exception e) {
+			throw new IOException(scope + " had invalid value (expected floating point value)");
+		}
+	}
+
+	public static float getFloatOrError(String scope, JsonElement ele) throws IOException {
+		try {
+			return ele.getAsFloat();
+		} catch (Exception e) {
+			throw new IOException(scope + " had invalid value (expected floating point value)");
+		}
+	}
+
+	public static String getStringOrError(String scope, JsonElement ele) throws IOException {
+		if (!ele.isJsonPrimitive())
+			throw new IOException(scope + " had invalid value (expected String value)");
+		return ele.getAsString();
+	}
+
+	public static JsonObject getObjectOrError(String scope, JsonElement ele) throws IOException {
+		if (!ele.isJsonObject())
+			throw new IOException(scope + " had invalid value (expected json object value)");
+		return ele.getAsJsonObject();
+	}
+
+	public static JsonArray getArrayOrError(String scope, JsonElement ele) throws IOException {
+		if (!ele.isJsonObject())
+			throw new IOException(scope + " had invalid value (expected json array value)");
+		return ele.getAsJsonArray();
 	}
 
 }

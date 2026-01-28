@@ -33,7 +33,7 @@ public class GithubApp {
 		return entity;
 	}
 
-	public JsonObject appApiRequest(String url, String method, String body) throws IOException {
+	public JsonObject appApiRequest(String url, String method, JsonObject body) throws IOException {
 		// Get app token
 		String appToken = GithubAppTokens.getOrCreateAuthToken(this);
 
@@ -53,7 +53,7 @@ public class GithubApp {
 		conn.addRequestProperty("Accept", "application/vnd.github+json");
 		if (body != null) {
 			conn.setDoOutput(true);
-			conn.getOutputStream().write(body.getBytes("UTF-8"));
+			conn.getOutputStream().write(body.toString().getBytes("UTF-8"));
 			conn.getOutputStream().close();
 		}
 		InputStream strm = conn.getInputStream();
@@ -67,7 +67,7 @@ public class GithubApp {
 		}
 	}
 
-	public JsonObject appInstallationApiRequest(String installationId, String url, String method, String body)
+	public JsonObject appInstallationApiRequest(String installationId, String url, String method, JsonObject body)
 			throws IOException {
 		// Get app token
 		String appToken = GithubAppInstallationTokens.getOrRequestInstallationAuthToken(this, installationId);
@@ -86,7 +86,12 @@ public class GithubApp {
 		conn.setRequestMethod("POST");
 		conn.addRequestProperty("Authorization", "Bearer " + appToken);
 		conn.addRequestProperty("Accept", "application/json");
-		InputStream strm = u.openStream();
+		if (body != null) {
+			conn.setDoOutput(true);
+			conn.getOutputStream().write(body.toString().getBytes("UTF-8"));
+			conn.getOutputStream().close();
+		}
+		InputStream strm = conn.getInputStream();
 		try {
 			// Read response
 			byte[] resp = strm.readAllBytes();
