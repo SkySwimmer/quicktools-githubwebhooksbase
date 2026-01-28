@@ -230,7 +230,7 @@ public class GithubWebhookEventServer {
 			// Check
 			JsonObject repository;
 			try {
-				repository = JsonUtils.getElementOrError("webhook payload", config, "repository").getAsJsonObject();
+				repository = JsonUtils.getElementOrError("webhook payload", hook, "repository").getAsJsonObject();
 			} catch (Exception e) {
 				logger.error("Webhook request " + req.getRequestMethod() + " " + req.getRequestPath()
 						+ " used a malformed json: could not parse repository statement", e);
