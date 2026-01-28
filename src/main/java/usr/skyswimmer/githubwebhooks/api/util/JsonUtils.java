@@ -53,4 +53,10 @@ public class JsonUtils {
 		return lst;
 	}
 
+	public static String stringOrNull(JsonElement ele) {
+		if (ele.isJsonNull())
+			return null;
+		return ele.getAsString();
+	}
+
 }

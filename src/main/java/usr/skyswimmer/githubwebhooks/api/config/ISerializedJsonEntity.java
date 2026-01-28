@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import com.google.gson.JsonObject;
 
-public interface IBaseJsonConfigEntity {
+public interface ISerializedJsonEntity {
 
 	public void loadFromJson(JsonObject source, String scope) throws IOException;
 

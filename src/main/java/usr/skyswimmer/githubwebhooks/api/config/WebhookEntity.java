@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 
 import usr.skyswimmer.githubwebhooks.api.util.JsonUtils;
 
-public class WebhookEntity implements IBaseJsonConfigEntity {
+public class WebhookEntity implements ISerializedJsonEntity {
 
 	public JsonObject json;
 	public String type = "hook";

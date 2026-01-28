@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 
 import usr.skyswimmer.githubwebhooks.api.util.JsonUtils;
 
-public class ConnectiveAdapterEntity implements IBaseJsonConfigEntity {
+public class ConnectiveAdapterEntity implements ISerializedJsonEntity {
 
 	public String protocol;
 	public HashMap<String, String> parameters = new LinkedHashMap<String, String>();

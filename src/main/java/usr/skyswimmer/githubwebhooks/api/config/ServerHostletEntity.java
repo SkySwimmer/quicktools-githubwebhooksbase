@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 
 import usr.skyswimmer.githubwebhooks.api.util.JsonUtils;
 
-public class ServerHostletEntity implements IBaseJsonConfigEntity {
+public class ServerHostletEntity implements ISerializedJsonEntity {
 
 	public ConnectiveAdapterEntity adapter;
 

@@ -14,7 +14,7 @@ import com.google.gson.JsonObject;
 
 import usr.skyswimmer.githubwebhooks.api.util.JsonUtils;
 
-public class AppEntity implements IBaseJsonConfigEntity {
+public class AppEntity implements ISerializedJsonEntity {
 
 	public File workingDir;
 	public String appId;
