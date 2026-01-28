@@ -119,7 +119,7 @@ public class JsonUtils {
 
 	public static JsonArray getArrayOrError(String scope, JsonObject object, String element) throws IOException {
 		JsonElement ele = getElementOrError(scope, object, element);
-		if (!ele.isJsonObject())
+		if (!ele.isJsonArray())
 			throw new IOException(scope + " had invalid value for " + element + " (expected json array value)");
 		return ele.getAsJsonArray();
 	}
@@ -176,7 +176,7 @@ public class JsonUtils {
 	}
 
 	public static JsonArray getArrayOrError(String scope, JsonElement ele) throws IOException {
-		if (!ele.isJsonObject())
+		if (!ele.isJsonArray())
 			throw new IOException(scope + " had invalid value (expected json array value)");
 		return ele.getAsJsonArray();
 	}
