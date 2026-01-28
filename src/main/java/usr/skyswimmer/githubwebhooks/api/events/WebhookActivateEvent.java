@@ -5,23 +5,31 @@ import org.asf.connective.lambda.LambdaPushContext;
 
 import com.google.gson.JsonObject;
 
+import usr.skyswimmer.githubwebhooks.api.apps.GithubApp;
 import usr.skyswimmer.githubwebhooks.api.config.WebhookEntity;
 import usr.skyswimmer.githubwebhooks.api.server.GithubWebhookEventServer;
 
 public class WebhookActivateEvent extends WebServerEvent {
 
 	private WebhookEntity webhook;
+	private GithubApp app;
 
 	private String event;
 	private JsonObject content;
 	private LambdaPushContext req;
 
 	public WebhookActivateEvent(GithubWebhookEventServer server, ConnectiveHttpServer webserver, WebhookEntity webhook,
-			String event, JsonObject content, LambdaPushContext req) {
+			GithubApp app, String event, JsonObject content, LambdaPushContext req) {
 		super(server, webserver);
 		this.webhook = webhook;
 		this.content = content;
 		this.req = req;
+		this.app = app;
+		this.event = event;
+	}
+
+	public GithubApp getApp() {
+		return app;
 	}
 
 	public WebhookEntity getWebhook() {

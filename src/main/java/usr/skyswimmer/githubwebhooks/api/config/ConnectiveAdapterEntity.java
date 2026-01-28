@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 
 import com.google.gson.JsonObject;
 
-import usr.skyswimmer.githubwebhooks.util.JsonUtils;
+import usr.skyswimmer.githubwebhooks.api.util.JsonUtils;
 
 public class ConnectiveAdapterEntity implements IBaseJsonConfigEntity {
 

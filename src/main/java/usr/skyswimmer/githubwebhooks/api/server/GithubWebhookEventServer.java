@@ -2,14 +2,17 @@ package usr.skyswimmer.githubwebhooks.api.server;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.Security;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.asf.connective.ConnectiveHttpServer;
 import org.asf.connective.lambda.LambdaPushContext;
-
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import usr.skyswimmer.githubwebhooks.api.apps.GithubApp;
+import usr.skyswimmer.githubwebhooks.api.config.AppEntity;
 import usr.skyswimmer.githubwebhooks.api.config.ServerHostletEntity;
 import usr.skyswimmer.githubwebhooks.api.config.WebhookEntity;
 import usr.skyswimmer.githubwebhooks.api.events.StartServerEvent;
@@ -17,11 +20,11 @@ import usr.skyswimmer.githubwebhooks.api.events.StartWebserverEvent;
 import usr.skyswimmer.githubwebhooks.api.events.StopServerEvent;
 import usr.skyswimmer.githubwebhooks.api.events.StopWebserverEvent;
 import usr.skyswimmer.githubwebhooks.api.events.WebhookActivateEvent;
+import usr.skyswimmer.githubwebhooks.api.util.HashUtils;
+import usr.skyswimmer.githubwebhooks.api.util.JsonUtils;
+import usr.skyswimmer.githubwebhooks.api.util.events.Event;
+import usr.skyswimmer.githubwebhooks.api.util.events.EventBus;
 import usr.skyswimmer.githubwebhooks.connective.logger.Log4jManagerImpl;
-import usr.skyswimmer.githubwebhooks.util.HashUtils;
-import usr.skyswimmer.githubwebhooks.util.JsonUtils;
-import usr.skyswimmer.githubwebhooks.util.events.Event;
-import usr.skyswimmer.githubwebhooks.util.events.EventBus;
 
 public class GithubWebhookEventServer {
 
@@ -37,6 +40,8 @@ public class GithubWebhookEventServer {
 					GithubWebhookEventServer.class.getResource("/log4j2.xml").toString());
 		}
 		new Log4jManagerImpl().assignAsMain();
+		if (Security.getProvider("BC") == null)
+			Security.addProvider(new BouncyCastleProvider());
 	}
 
 	private Logger logger;
@@ -233,39 +238,104 @@ public class GithubWebhookEventServer {
 				return;
 			}
 
-			// Check
-			JsonObject repository;
-			try {
-				repository = JsonUtils.getElementOrError("webhook payload", hook, "repository").getAsJsonObject();
-			} catch (Exception e) {
-				logger.error("Webhook request " + req.getRequestMethod() + " " + req.getRequestPath()
-						+ " used a malformed json: could not parse repository statement", e);
-				req.setResponseStatus(400, "Bad request");
-				return;
-			}
-			if (!repository.has("full_name")) {
-				logger.error("Webhook request " + req.getRequestMethod() + " " + req.getRequestPath()
-						+ " used a malformed json: repository block misses the full_name property");
-				req.setResponseStatus(400, "Bad request");
-				return;
-			}
-			if (!repository.get("full_name").getAsString().equals(webhook.repository)) {
-				logger.error("Webhook request " + req.getRequestMethod() + " " + req.getRequestPath()
-						+ " used unexpected repository string " + repository.get("full_name").getAsString()
-						+ " while expecting " + webhook.repository);
-				req.setResponseStatus(403, "Forbidden");
-				return;
-			}
+			// Handle type
+			if (webhook.type.equals("hook")) {
+				// Check
+				JsonObject repository;
+				try {
+					repository = JsonUtils.getElementOrError("webhook payload", hook, "repository").getAsJsonObject();
+				} catch (Exception e) {
+					logger.error("Webhook request " + req.getRequestMethod() + " " + req.getRequestPath()
+							+ " used a malformed json: could not parse repository statement", e);
+					req.setResponseStatus(400, "Bad request");
+					return;
+				}
+				if (!repository.has("full_name")) {
+					logger.error("Webhook request " + req.getRequestMethod() + " " + req.getRequestPath()
+							+ " used a malformed json: repository block misses the full_name property");
+					req.setResponseStatus(400, "Bad request");
+					return;
+				}
+				if (!repository.get("full_name").getAsString().equals(webhook.repository)) {
+					logger.error("Webhook request " + req.getRequestMethod() + " " + req.getRequestPath()
+							+ " used unexpected repository string " + repository.get("full_name").getAsString()
+							+ " while expecting " + webhook.repository);
+					req.setResponseStatus(403, "Forbidden");
+					return;
+				}
 
-			// Call event
-			WebhookActivateEvent ev = new WebhookActivateEvent(this, server, webhook, req.getHeader("X-GitHub-Event"),
-					hook, req);
-			webhookActivateEvent.dispatchEvent(ev);
-			if (ev.isHandled())
-				return;
-			EventBus.getInstance().dispatchEvent(ev);
+				// Call event
+				WebhookActivateEvent ev = new WebhookActivateEvent(this, server, webhook, null,
+						req.getHeader("X-GitHub-Event"), hook, req);
+				webhookActivateEvent.dispatchEvent(ev);
+				if (ev.isHandled())
+					return;
+				EventBus.getInstance().dispatchEvent(ev);
+			} else {
+				// App
+
+				// Get app ID
+				String appId = webhook.app;
+
+				// Load apps
+				JsonObject appsConf;
+				try {
+					appsConf = JsonUtils.getElementOrError("config", conf, "apps").getAsJsonObject();
+				} catch (Exception e) {
+					logger.error(
+							"Could not load configuration file: " + configFile + ": failure loading apps configuration",
+							e);
+					req.setResponseStatus(500, "Internal Server Error");
+					return;
+				}
+
+				// Get app
+				if (!appsConf.has(appId)) {
+					// Cancel
+					logger.error("Could not load webhook " + path + ": app " + appId + " not recognized");
+					req.setResponseStatus(404, "Not Found");
+					return;
+				}
+
+				// Get app
+				AppEntity app = new AppEntity(workingDir, appId);
+				try {
+					app.loadFromJson(appsConf.get(appId).getAsJsonObject(), "app " + appId);
+				} catch (Exception e) {
+					logger.error("Could not load webhook " + path + ": error loading app sheet " + appId, e);
+					req.setResponseStatus(500, "Internal Server Error");
+					return;
+				}
+
+				// Check if app key exists
+				File appKey = new File(workingDir, app.key);
+				if (!appKey.exists()) {
+					logger.error("Could not load webhook " + path + ": error loading app sheet " + appId
+							+ ": app key does not exist");
+					req.setResponseStatus(500, "Internal Server Error");
+					return;
+				}
+
+				// Load keys
+				// Try loading app key
+				try {
+					app.loadKey();
+				} catch (Exception e) {
+					logger.error("Could not load webhook " + path + ": error loading app sheet " + appId
+							+ ": app key failed to load", e);
+					req.setResponseStatus(500, "Internal Server Error");
+					return;
+				}
+
+				// Call event
+				WebhookActivateEvent ev = new WebhookActivateEvent(this, server, webhook, new GithubApp(app),
+						req.getHeader("X-GitHub-Event"), hook, req);
+				webhookActivateEvent.dispatchEvent(ev);
+				if (ev.isHandled())
+					return;
+				EventBus.getInstance().dispatchEvent(ev);
+			}
 		}, true, true, "POST", "GET", "DELETE", "PUT", "PATCH");
-
 	}
 
 	/**
