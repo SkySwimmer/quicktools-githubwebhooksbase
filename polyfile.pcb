@@ -1,7 +1,7 @@
 # Project information
 group=usr.skyswimmer
-id=githubwebhooks
-name="githubwebhooks"
+id=quicktools-githubwebhooksbase
+name="quicktools-githubwebhooksbase"
 version=a1.0
 
 # Sub-projects

@@ -9,10 +9,10 @@ group = "usr.skyswimmer"
 sourceCompatibility = '1.17'
 targetCompatibility = '1.17'
 
-def projectId = "githubwebhooks"
-def projectName = "githubwebhooks"
+def projectId = "quicktools-githubwebhooksbase"
+def projectName = "quicktools-githubwebhooksbase"
 def authorName = "SkySwimmer"
-def pkg = "${group}.${projectId}"
+def pkg = "${group}.githubwebhooksbase"
 
 apply plugin: 'eclipse'
 apply plugin: 'idea'
