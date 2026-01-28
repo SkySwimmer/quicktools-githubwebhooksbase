@@ -1,0 +1,3 @@
+rootProject.name = 'githubwebhooks'
+include("connective-http")
+project(":connective-http").projectDir = file("deps/connective-http")
