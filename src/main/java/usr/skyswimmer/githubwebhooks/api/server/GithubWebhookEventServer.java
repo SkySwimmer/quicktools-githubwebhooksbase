@@ -216,7 +216,42 @@ public class GithubWebhookEventServer {
 			}
 
 			// Success
-			JsonObject hook = JsonParser.parseString(body).getAsJsonObject();
+			// Parse json
+			JsonObject hook;
+			try {
+				hook = JsonParser.parseString(body).getAsJsonObject();
+			} catch (Exception e) {
+				logger.error("Webhook request " + req.getRequestMethod() + " " + req.getRequestPath()
+						+ " used a malformed json", e);
+				req.setResponseStatus(400, "Bad request");
+				return;
+			}
+
+			// Check
+			JsonObject repository;
+			try {
+				repository = JsonUtils.getElementOrError("webhook payload", config, "repository").getAsJsonObject();
+			} catch (Exception e) {
+				logger.error("Webhook request " + req.getRequestMethod() + " " + req.getRequestPath()
+						+ " used a malformed json: could not parse repository statement", e);
+				req.setResponseStatus(400, "Bad request");
+				return;
+			}
+			if (!repository.has("full_name")) {
+				logger.error("Webhook request " + req.getRequestMethod() + " " + req.getRequestPath()
+						+ " used a malformed json: repository block misses the full_name property");
+				req.setResponseStatus(400, "Bad request");
+				return;
+			}
+			if (!repository.get("full_name").getAsString().equals(webhook.repository)) {
+				logger.error("Webhook request " + req.getRequestMethod() + " " + req.getRequestPath()
+						+ " used unexpected repository string " + repository.get("full_name").getAsString()
+						+ " while expecting " + webhook.repository);
+				req.setResponseStatus(403, "Forbidden");
+				return;
+			}
+
+			// Call event
 			WebhookActivateEvent ev = new WebhookActivateEvent(this, server, webhook, hook, req);
 			webhookActivateEvent.dispatchEvent(ev);
 			if (ev.isHandled())
