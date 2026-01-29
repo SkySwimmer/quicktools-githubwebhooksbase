@@ -67,6 +67,35 @@ public class GithubApp {
 		}
 	}
 
+	public JsonObject apiRequest(String url, String method, JsonObject body) throws IOException {
+		// Request token
+		String uF = entity.api;
+		if (!uF.endsWith("/"))
+			uF += "/";
+		if (url.startsWith("/"))
+			url = url.substring(1);
+		uF += url;
+		URL u = new URL(uF);
+
+		// Create request
+		HttpURLConnection conn = (HttpURLConnection) u.openConnection();
+		conn.setRequestMethod(method);
+		if (body != null) {
+			conn.setDoOutput(true);
+			conn.getOutputStream().write(body.toString().getBytes("UTF-8"));
+			conn.getOutputStream().close();
+		}
+		InputStream strm = conn.getInputStream();
+		try {
+			// Read response
+			byte[] resp = strm.readAllBytes();
+			String res = new String(resp, "UTF-8");
+			return JsonParser.parseString(res).getAsJsonObject();
+		} finally {
+			strm.close();
+		}
+	}
+
 	public JsonObject appInstallationApiRequest(String installationId, String url, String method, JsonObject body)
 			throws IOException {
 		// Get app token
