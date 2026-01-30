@@ -5,9 +5,11 @@ import java.util.ArrayList;
 public class WildcardPatternMatcher {
 
 	private String[] pattern;
+	private boolean endswithWildcard;
 
 	public WildcardPatternMatcher(String pattern) {
 		this.pattern = pattern.split("\\*");
+		endswithWildcard = pattern.endsWith("*");
 	}
 
 	public PatternMatchResult match(String text) {
@@ -59,11 +61,22 @@ public class WildcardPatternMatcher {
 						// is also wildcard
 						if (!val.isEmpty())
 							params.add(val);
-						;
+
+						// Check if the pattern is a endswith wildcard
+						if (!endswithWildcard && !text.isEmpty()) {
+							// Invalid
+							return new PatternMatchResult(false, params.toArray(t -> new String[t]));
+						}
 					}
 				} else {
 					// Update parameters
 					params.add(val);
+
+					// Check if the pattern is a endswith wildcard
+					if (!endswithWildcard && !val.isEmpty()) {
+						// Invalid
+						return new PatternMatchResult(false, params.toArray(t -> new String[t]));
+					}
 
 					// Success
 					return new PatternMatchResult(true, params.toArray(t -> new String[t]));
@@ -94,6 +107,12 @@ public class WildcardPatternMatcher {
 					// is also wildcard
 					if (!val.isEmpty())
 						params.add(val);
+
+					// Check if the pattern is a endswith wildcard
+					if (!endswithWildcard && !text.isEmpty()) {
+						// Invalid
+						return new PatternMatchResult(false, params.toArray(t -> new String[t]));
+					}
 				}
 			}
 		}
