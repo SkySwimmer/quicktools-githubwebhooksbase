@@ -1,4 +1,4 @@
-package usr.skyswimmer.githubwebhooks.api.apps;
+package usr.skyswimmer.githubwebhooks.apps;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +9,7 @@ import java.security.PrivateKey;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import usr.skyswimmer.githubwebhooks.api.config.AppEntity;
+import usr.skyswimmer.githubwebhooks.config.AppEntity;
 
 public class GithubApp {
 

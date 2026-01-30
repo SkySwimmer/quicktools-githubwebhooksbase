@@ -1,9 +1,9 @@
-package usr.skyswimmer.githubwebhooks.api.apps;
+package usr.skyswimmer.githubwebhooks.apps;
 
 import java.util.HashMap;
 
-import usr.skyswimmer.githubwebhooks.api.tokens.SessionToken;
-import usr.skyswimmer.githubwebhooks.api.util.tasks.async.AsyncTaskManager;
+import usr.skyswimmer.githubwebhooks.tokens.SessionToken;
+import usr.skyswimmer.quicktoolsutils.tasks.async.AsyncTaskManager;
 
 public class GithubAppTokens {
 

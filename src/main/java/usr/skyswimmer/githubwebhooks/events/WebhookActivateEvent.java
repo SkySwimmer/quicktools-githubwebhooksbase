@@ -1,13 +1,13 @@
-package usr.skyswimmer.githubwebhooks.api.events;
+package usr.skyswimmer.githubwebhooks.events;
 
 import org.asf.connective.ConnectiveHttpServer;
 import org.asf.connective.lambda.LambdaPushContext;
 
 import com.google.gson.JsonObject;
 
-import usr.skyswimmer.githubwebhooks.api.apps.GithubApp;
-import usr.skyswimmer.githubwebhooks.api.config.WebhookEntity;
-import usr.skyswimmer.githubwebhooks.api.server.GithubWebhookEventServer;
+import usr.skyswimmer.githubwebhooks.apps.GithubApp;
+import usr.skyswimmer.githubwebhooks.config.WebhookEntity;
+import usr.skyswimmer.githubwebhooks.server.GithubWebhookEventServer;
 
 public class WebhookActivateEvent extends WebServerEvent {
 

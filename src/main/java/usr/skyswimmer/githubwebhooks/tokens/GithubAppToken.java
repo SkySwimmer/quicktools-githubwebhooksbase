@@ -1,4 +1,4 @@
-package usr.skyswimmer.githubwebhooks.api.tokens;
+package usr.skyswimmer.githubwebhooks.tokens;
 
 public class GithubAppToken {
 	public String token;

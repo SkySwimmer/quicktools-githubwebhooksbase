@@ -1,4 +1,4 @@
-package usr.skyswimmer.githubwebhooks.api.tokens;
+package usr.skyswimmer.githubwebhooks.tokens;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;

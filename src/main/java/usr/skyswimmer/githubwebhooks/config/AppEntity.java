@@ -1,4 +1,4 @@
-package usr.skyswimmer.githubwebhooks.api.config;
+package usr.skyswimmer.githubwebhooks.config;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +12,8 @@ import org.bouncycastle.util.io.pem.PemReader;
 
 import com.google.gson.JsonObject;
 
-import usr.skyswimmer.githubwebhooks.api.util.JsonUtils;
+import usr.skyswimmer.quicktoolsutils.json.ISerializedJsonEntity;
+import usr.skyswimmer.quicktoolsutils.json.JsonUtils;
 
 public class AppEntity implements ISerializedJsonEntity {
 

@@ -1,7 +1,7 @@
-package usr.skyswimmer.githubwebhooks.api.events;
+package usr.skyswimmer.githubwebhooks.events;
 
-import usr.skyswimmer.githubwebhooks.api.server.GithubWebhookEventServer;
-import usr.skyswimmer.githubwebhooks.api.util.events.EventObject;
+import usr.skyswimmer.githubwebhooks.server.GithubWebhookEventServer;
+import usr.skyswimmer.quicktoolsutils.events.EventObject;
 
 public class ServerEvent extends EventObject {
 	private GithubWebhookEventServer server;

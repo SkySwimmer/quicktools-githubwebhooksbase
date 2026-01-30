@@ -1,4 +1,4 @@
-package usr.skyswimmer.githubwebhooks.api.apps;
+package usr.skyswimmer.githubwebhooks.apps;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -6,9 +6,10 @@ import java.util.HashMap;
 import java.util.TimeZone;
 
 import com.google.gson.JsonObject;
-import usr.skyswimmer.githubwebhooks.api.tokens.GithubAppToken;
-import usr.skyswimmer.githubwebhooks.api.util.JsonUtils;
-import usr.skyswimmer.githubwebhooks.api.util.tasks.async.AsyncTaskManager;
+
+import usr.skyswimmer.githubwebhooks.tokens.GithubAppToken;
+import usr.skyswimmer.quicktoolsutils.json.JsonUtils;
+import usr.skyswimmer.quicktoolsutils.tasks.async.AsyncTaskManager;
 
 public class GithubAppInstallationTokens {
 

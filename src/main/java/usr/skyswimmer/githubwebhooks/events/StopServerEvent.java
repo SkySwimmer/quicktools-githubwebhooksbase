@@ -1,6 +1,6 @@
-package usr.skyswimmer.githubwebhooks.api.events;
+package usr.skyswimmer.githubwebhooks.events;
 
-import usr.skyswimmer.githubwebhooks.api.server.GithubWebhookEventServer;
+import usr.skyswimmer.githubwebhooks.server.GithubWebhookEventServer;
 
 public class StopServerEvent extends ServerEvent {
 

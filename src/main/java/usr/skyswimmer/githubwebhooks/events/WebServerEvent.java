@@ -1,8 +1,8 @@
-package usr.skyswimmer.githubwebhooks.api.events;
+package usr.skyswimmer.githubwebhooks.events;
 
 import org.asf.connective.ConnectiveHttpServer;
 
-import usr.skyswimmer.githubwebhooks.api.server.GithubWebhookEventServer;
+import usr.skyswimmer.githubwebhooks.server.GithubWebhookEventServer;
 
 public class WebServerEvent extends ServerEvent {
 
